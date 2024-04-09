@@ -1,7 +1,25 @@
 
 let searchInput = document.getElementById('search-input');
+let searchTypeSelect = document.getElementById('searchType');
 
-async function searchRepository() {
+async function search() {
+    let searchType = searchTypeSelect.value;
+
+    try {
+        let data;
+        if (searchType === 'repositories') {
+            data = await searchRepositories();
+        } else if (searchType === 'users') {
+            data = await searchUsers();
+        }
+
+        displayResults(data, searchType);
+    } catch (error) {
+        console.error('Errore durante la richiesta:', error);
+    }
+}
+
+async function searchRepositories() {
     try {
         // effettua una richiesta GET all'endpoint di ricerca
         const response = await fetch(`https://api.github.com/search/repositories?q=${searchInput.value}`, {
@@ -15,9 +33,8 @@ async function searchRepository() {
         // controllo se la richiesta è andata a buon fine
         if (response.ok) {
             // se la risposta è ok, ottiengo i dati in formato JSON
-            const data = await response.json();
+            let data = await response.json();
             console.log(data);
-            displayResults(data);
         } else {
             // se la richiesta non è andata a buon fine, stampo un messaggio di errore sulla console con lo status code della risposta
             console.error('Errore nella richiesta:', response.status);
@@ -28,22 +45,50 @@ async function searchRepository() {
     }
 }
 
-function displayResults(data) {
+async function searchUsers() {
+    const response = await fetch(`https://api.github.com/search/users?q=${searchInput.value}`, {
+        headers: {
+            "Authorization": `Bearer ${window.config.token}`,
+            "X-GitHub-Api-Version": "2022-11-28"
+        }
+    });
+
+    if (response.ok) {
+        let data = await response.json();
+        console.log(data);
+        displayResults(data);
+    } else {
+        throw new Error(`Errore nella richiesta: ${response.status}`);
+    }
+}
+
+function displayResults(data, searchType) {
     const resultsContainer = document.getElementById('results');
     resultsContainer.innerHTML = '';
 
-    // itero sui risultati ottenuti
     data.items.forEach(result => {
-        // crea un elemento div per ogni risultato
         const card = document.createElement('div');
         card.classList.add('col-md-4');
         card.classList.add('mb-4');
 
+        let cardContent = '';
+
+        if (searchType === 'repositories') {
+            cardContent = `
+                <h5 class="card-title">${result.name}</h5>
+                <p class="card-text">${result.description}</p>
+            `;
+        } else if (searchType === 'users') {
+            cardContent = `
+                <h5 class="card-title">${result.login}</h5>
+                <p class="card-text">Type: ${result.type}</p>
+            `;
+        }
+
         card.innerHTML = `
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">${result.name}</h5> <!-- Assumi che il risultato abbia una proprietà 'name' -->
-                    <p class="card-text">${result.description}</p> <!-- Assumi che il risultato abbia una proprietà 'description' -->
+                    ${cardContent}
                     <a href="${result.html_url}" class="btn btn-primary" target="_blank">View on GitHub</a>
                 </div>
             </div>

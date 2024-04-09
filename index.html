@@ -17,7 +17,13 @@
             </div>
         </div>
         <div class="col-md-3">
-            <button class="btn btn-primary btn-block" onclick="searchRepository()">Search</button>
+            <select class="form-control" id="searchType">
+                <option value="repositories" selected>Repository</option>
+                <option value="users">Utenti/Organizzazioni</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-primary btn-block" onclick="search()">Search</button>
         </div>
     </div>
 
