@@ -33,8 +33,7 @@ async function searchRepositories() {
         // controllo se la richiesta è andata a buon fine
         if (response.ok) {
             // se la risposta è ok, ottiengo i dati in formato JSON
-            let data = await response.json();
-            console.log(data);
+            return await response.json();
         } else {
             // se la richiesta non è andata a buon fine, stampo un messaggio di errore sulla console con lo status code della risposta
             console.error('Errore nella richiesta:', response.status);
@@ -54,9 +53,7 @@ async function searchUsers() {
     });
 
     if (response.ok) {
-        let data = await response.json();
-        console.log(data);
-        displayResults(data);
+        return await response.json();
     } else {
         throw new Error(`Errore nella richiesta: ${response.status}`);
     }
@@ -77,9 +74,13 @@ function displayResults(data, searchType) {
             cardContent = `
                 <h5 class="card-title">${result.name}</h5>
                 <p class="card-text">${result.description}</p>
+                <p class="card-text">${result.watchers_count}</p>
             `;
         } else if (searchType === 'users') {
             cardContent = `
+                <div class="img-container">
+                    <img src="${result.avatar_url}">
+                </div>
                 <h5 class="card-title">${result.login}</h5>
                 <p class="card-text">Type: ${result.type}</p>
             `;
