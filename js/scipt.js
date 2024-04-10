@@ -2,10 +2,19 @@ let searchInput = document.getElementById('search-input');
 let searchTypeSelect = document.getElementById('searchType');
 let errorContainer = document.getElementById('error');
 let loader = document.getElementById('loader');
+let searchTimeout;
+
+searchInput.addEventListener('input', function() {
+    clearTimeout(searchTimeout); // cancello il timer precedente
+    searchTimeout = setTimeout(search, 700); // avvio la ricerca dopo 700ms di inattività
+});
+
 
 async function search() {
+    // non considero gli spazi nell'input
     let inputText = searchInput.value.trim();
 
+    // non faccio partire la ricerca se non ho almeno 3 caratteri
     if (inputText.length < 3) {
         errorContainer.style.display = 'block';
         return;
@@ -80,7 +89,6 @@ function displayResults(data, searchType) {
         return;
     }
 
-
     data.items.forEach(result => {
         const card = document.createElement('div');
         card.classList.add('col-md-4');
@@ -88,8 +96,12 @@ function displayResults(data, searchType) {
 
         let cardContent = '';
 
+        // mostro le card con i risultati in base a ciò che viene selezionato
         if (searchType === 'repositories') {
             cardContent = `
+                <div class="img-container">
+                    <img src="${result.owner.avatar_url}">
+                </div>
                 <h5 class="card-title">${result.name}</h5>
                 <p class="card-text">${result.description}</p>
                 <p class="card-text"><i class="fa-solid fa-eye"></i> ${result.watchers_count}</p>
@@ -106,9 +118,9 @@ function displayResults(data, searchType) {
 
         card.innerHTML = `
             <div class="card">
-                <div class="card-body">
+                <div class="card-body text-center">
                     ${cardContent}
-                    <a href="${result.html_url}" class="btn btn-primary" target="_blank">View on GitHub</a>
+                    <a href="${result.html_url}" class="btn btn-primary" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> View on GitHub</a>
                 </div>
             </div>
         `;

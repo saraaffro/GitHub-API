@@ -8,7 +8,9 @@
     width: 100%;
 }
 .img-container img{
-    width: 100%;
+    width: 200px;
+    border-radius: 50%;
+    margin-bottom: 20px;
 }
 .loader-container{
     width: 100%;
