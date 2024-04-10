@@ -1,9 +1,18 @@
 
 let searchInput = document.getElementById('search-input');
 let searchTypeSelect = document.getElementById('searchType');
-
+let errorContainer = document.getElementById('error');
 
 async function search() {
+    let inputText = searchInput.value.trim();
+
+    if (inputText.length < 3) {
+        errorContainer.style.display = 'block';
+        return;
+    } else {
+        errorContainer.style.display = 'none';
+    }
+
     let searchType = searchTypeSelect.value;
 
     try {
@@ -64,6 +73,12 @@ async function searchUsers() {
 function displayResults(data, searchType) {
     const resultsContainer = document.getElementById('results');
     resultsContainer.innerHTML = '';
+
+    if (data.items.length === 0) {
+        resultsContainer.innerHTML = '<p>Nessun risultato trovato per la tua ricerca.</p>';
+        return;
+    }
+
 
     data.items.forEach(result => {
         const card = document.createElement('div');
