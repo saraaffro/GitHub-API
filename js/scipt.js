@@ -1,7 +1,7 @@
-
 let searchInput = document.getElementById('search-input');
 let searchTypeSelect = document.getElementById('searchType');
 let errorContainer = document.getElementById('error');
+let loader = document.getElementById('loader');
 
 async function search() {
     let inputText = searchInput.value.trim();
@@ -16,6 +16,7 @@ async function search() {
     let searchType = searchTypeSelect.value;
 
     try {
+        loader.classList.add('block');
         let data;
         if (searchType === 'repositories') {
             data = await searchRepositories();
@@ -114,4 +115,5 @@ function displayResults(data, searchType) {
 
         resultsContainer.appendChild(card);
     });
+    loader.classList.remove('block');
 }
