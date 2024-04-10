@@ -2,6 +2,7 @@
 let searchInput = document.getElementById('search-input');
 let searchTypeSelect = document.getElementById('searchType');
 
+
 async function search() {
     let searchType = searchTypeSelect.value;
 
@@ -14,6 +15,7 @@ async function search() {
         }
 
         displayResults(data, searchType);
+        searchInput.value = '';
     } catch (error) {
         console.error('Errore durante la richiesta:', error);
     }
@@ -74,7 +76,7 @@ function displayResults(data, searchType) {
             cardContent = `
                 <h5 class="card-title">${result.name}</h5>
                 <p class="card-text">${result.description}</p>
-                <p class="card-text">${result.watchers_count}</p>
+                <p class="card-text"><i class="fa-solid fa-eye"></i> ${result.watchers_count}</p>
             `;
         } else if (searchType === 'users') {
             cardContent = `
